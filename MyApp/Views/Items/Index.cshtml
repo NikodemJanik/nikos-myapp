@@ -1,58 +1,90 @@
 ﻿@model List<MyApp.Models.Item>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Items";
 }
 
-<h3>Index</h3>
+<div class="container mt-4">
+    <!-- Small banner -->
+    <div class="card mb-4 bg-light">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h5 class="mb-1">Monthly Expense Summary</h5>
+                    <p class="text-muted mb-0">Track your expenses and stay on budget. For help, contact <a href="mailto:support@example.com">support@example.com</a></p>
+                </div>
+                <div class="ms-auto">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i>Add New Item
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Serial Number</th>
-            <th>Category</th>
-            <th>Clients</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Price.ToString("N2") $</td>
-                <td>@item.SerialNumber?.Name</td>
-                <td>@item.Category?.Name</td>
-                <td>
-                    @foreach(var client in item.ItemClients)
-                    {
-                        @client.Client.Name
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <a asp-action="delete" asp-route-id="@item.Id">delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <!-- Items table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">All Items</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Serial Number</th>
+                            <th>Category</th>
+                            <th>Clients</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>$@item.Price.ToString("N2")</td>
+                                <td>@item.SerialNumber?.Name</td>
+                                <td>
+                                    <span class="badge bg-light text-dark">@item.Category?.Name</span>
+                                </td>
+                                <td>
+                                    @foreach (var client in item.ItemClients)
+                                    {
+                                        <span class="badge bg-info text-dark me-1">@client.Client.Name</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-
-<div class="banner" style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; margin-bottom: 20px;">
-    <div class="banner-content">
-        <h5 style="margin-top: 0; color: #495057;">Podsumowanie miesięcznych wydatków</h5>
-        <p style="margin-bottom: 0; color: #6c757d;">
-            Śledź swoje wydatki i trzymaj się budżetu. Aby uzyskać pomoc, skontaktuj się z <a href="mailto:support@example.com">support@example.com</a>
-        </p>
+    <!-- Chart section -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Category Distribution</h5>
+        </div>
+        <div class="card-body">
+            <div class="expenses-container">
+                <canvas id="productCategoryChart" height="300"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Your existing expenses table or content would go here -->
-<div class="expenses-container">
-    <!-- Existing expenses content -->
-</div>
-
-<li class="nav-item">
-    <a class="nav-link" asp-controller="Home" asp-action="Wykres">Wykres</a>
-</li>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/productCategoryChart.js"></script>
